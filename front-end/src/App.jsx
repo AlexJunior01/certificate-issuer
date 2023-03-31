@@ -76,7 +76,7 @@ function BuscaTab() {
               </Col>
               <Col md={5}>
                 <p>Horas Concluídas: {certificate.hoursDone.toString()}</p>
-                <p>Data: {new Date(certificate.date * 1000).toLocaleDateString()}</p>
+                <p>Data: {new Date(certificate.issueDate * 1000).toDateString()}</p>
               </Col>
             </Row>
             <Row className="justify-content-center mt-2">
