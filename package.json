@@ -1,5 +1,0 @@
-{
-  "dependencies": {
-    "certificate-issuer": "file:back-end"
-  }
-}

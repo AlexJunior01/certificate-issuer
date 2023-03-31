@@ -16,10 +16,10 @@ Primeiro certifique-se que tem o `Javascript` e o `Node` instalados na sua máqu
 1 - Garanta que está dentro da pasta raiz /cerificate-issuer, em seguida, instale as dependências dos módulos back-end e front-end;
 
 ``` bash
-cd ../front-end
+cd front-end
 npm install
 
-cd back-end
+cd ../back-end
 npm install
 ```
 
