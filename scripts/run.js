@@ -9,16 +9,29 @@ const main = async () => {
     console.log("Contract deployed by:", owner.address);
 
     let certificate = {
-        "RA": "760921",
+        "RA": 760921,
         "hoursDone": 60,
         "name": "Projeto BlockChain 1.0",
         "link": "https://drive.google.com/file/d/1FBYXtkKDeTElFe5sYTc7mJDKLEXq8jTP/view?usp=share_link"
     }
 
-    let numContracts;
+    let certificate2 = {
+        "RA": 760921,
+        "hoursDone": 90,
+        "name": "Aula de sexo anal",
+        "link": "https://drive.google.com/file/d/1FBYXtkKDeTElFe5sYTc7mJDKLEXq8jTP/view?usp=share_link"
+    }
 
-    numContracts = await certificateContract.issueNewCertificate(certificate);
+    let certificateID;
+
+    certificateID = await certificateContract.issueNewCertificate(certificate);
+    await certificateID.wait(); // aguarda a transação ser minerada
+
+    certificateID = await certificateContract.issueNewCertificate(certificate2);
+    await certificateID.wait(); // aguarda a transação ser minerada
     
+    let certificates = await certificateContract.getCertificatesByRA(760921)
+    console.log(certificates)
 }
 
 

@@ -6,17 +6,25 @@ import "hardhat/console.sol";
 
 
 contract CertificateIssuer {
-    struct Certificate {
-        string RA;
+    struct CertificateInput {
+        int RA;
         int hoursDone;
         string name;
         string link;
     }
 
+    struct Certificate {
+        int RA;
+        int hoursDone;
+        string name;
+        string link;
+        uint256 issueDate;
+    }
+
     address public owner;
     uint256 numCertificates;
 
-    Certificate[] certificates;
+    mapping (int => Certificate[]) raCertificates;
 
     constructor() {
         console.log("Inicializando contrato.");
@@ -25,18 +33,27 @@ contract CertificateIssuer {
         console.log("Dono do contrato: %s", msg.sender);
     }
     
-    function issueNewCertificate(Certificate calldata newCertificate) public returns (uint256) {
+    function issueNewCertificate(CertificateInput calldata newCertificate) public {
         require(msg.sender == owner, "Somente o dono do contrato pode realizar esse operacao.");
+        int ra = newCertificate.RA;
 
-        certificates.push(newCertificate);
+        Certificate memory certificate = Certificate({
+            RA: newCertificate.RA,
+            hoursDone: newCertificate.hoursDone,
+            name: newCertificate.name,
+            link: newCertificate.link,
+            issueDate: block.timestamp
+        });
 
-        console.log("CERTIFICATE: %s", certificates[0].RA);
-        numCertificates += 1;
-
-        console.log("%s certificados emitidos", numCertificates);
+        raCertificates[ra].push(certificate);
         
-        return numCertificates;
+        return;
     }
+
+    function getCertificatesByRA(int RA) public view returns(Certificate[] memory) {
+        return raCertificates[RA];
+    }
+
 
 
 }
