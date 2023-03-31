@@ -2,9 +2,10 @@ import React, { useEffect, useState } from "react";
 import { ethers, utils } from "ethers";
 import './App.css';
 import abi from "./utils/issueCertificate.json"
-import { Tabs, Tab } from 'react-bootstrap';
+import { Tabs, Tab, Row, Col, Button } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min';
+import { ListGroup } from 'react-bootstrap';
 
 const contractAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
 const contractABI = abi.abi;
@@ -21,6 +22,8 @@ const searchCertificates = async (ra) => {
       console.log("Buscando certificados para RA:", ra);
       let certificates = await issueCertificateContract.getCertificatesByRA(parseInt(ra));
       console.log(certificates);
+      return certificates
+
     } else {
       console.log("Objeto Ethereum não encontrado!");
     }
@@ -33,18 +36,21 @@ const searchCertificates = async (ra) => {
 
 function BuscaTab() {
   const [ra, setRa] = useState("");
+  const [certificates, setCertificates] = useState([]);
 
   const handleRaChange = (event) => {
     setRa(event.target.value);
   };
 
-  const handleSearch = (event) => {
+  const handleSearch = async (event) => {
     event.preventDefault();
     console.log("Buscando certificados para RA:", ra);
-    searchCertificates(ra);
+    const foundCertificates = await searchCertificates(ra);
+    setCertificates(foundCertificates);
   };
 
   return (
+    <>
     <form onSubmit={handleSearch}>
       <div className="form-group">
         <label htmlFor="ra">RA</label>
@@ -59,6 +65,35 @@ function BuscaTab() {
       </div>
       <button type="submit" className="btn btn-primary">Pesquisar</button>
     </form>
+    <div className="list-group-container">
+      <ListGroup className="custom-list-group">
+        {certificates.map((certificate, index) => (
+          <ListGroup.Item key={index} className="list-group-item">
+            <Row className="justify-content-md-center">
+              <Col md={5}>
+                <p>Nome: {certificate.name}</p>
+                <p>RA: {certificate.RA.toString()}</p>
+              </Col>
+              <Col md={5}>
+                <p>Horas Concluídas: {certificate.hoursDone.toString()}</p>
+                <p>Data: {new Date(certificate.date * 1000).toLocaleDateString()}</p>
+              </Col>
+            </Row>
+            <Row className="justify-content-center mt-2">
+              <Col xs="auto">
+                <a href={certificate.link} target="_blank" rel="noopener noreferrer">
+                  <Button variant="primary">
+                    Abrir Certificado
+                  </Button>
+                </a>
+              </Col>
+            </Row>
+          </ListGroup.Item>
+        ))}
+      </ListGroup>
+    </div>
+  </>
+    
   );
 }
 
