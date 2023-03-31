@@ -18,7 +18,7 @@ const main = async () => {
     let certificate2 = {
         "RA": 760921,
         "hoursDone": 90,
-        "name": "Aula de sexo anal",
+        "name": "HackoonSpace 2023/1.",
         "link": "https://drive.google.com/file/d/1FBYXtkKDeTElFe5sYTc7mJDKLEXq8jTP/view?usp=share_link"
     }
 
