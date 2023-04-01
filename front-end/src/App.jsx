@@ -10,6 +10,38 @@ import { ListGroup } from 'react-bootstrap';
 const contractAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
 const contractABI = abi.abi;
 
+const issueCertificate = async (form) => {
+  try {
+    const { ethereum } = window;
+
+    if (ethereum) {
+      const provider = new ethers.providers.Web3Provider(ethereum);
+      const signer = provider.getSigner();
+      const issueCertificate = new ethers.Contract(contractAddress, contractABI, signer);
+
+      console.log("Emitindo certificado.");
+      let certificate = {
+        "RA": parseInt(form.ra),
+        "hoursDone": parseInt(form.hoursDone),
+        "name": form.name,
+        "link": form.link
+      }
+      let xpto = await issueCertificate.issueNewCertificate(certificate);
+
+      console.log("Minerando...", xpto.hash);
+      await xpto.wait();
+      console.log("Minerado -- ", xpto.hash);
+      
+      let certificates = await issueCertificate.getCertificatesByRA(parseInt(form.ra))
+      console.log(certificates)
+
+    } else {
+      console.log("Objeto Ethereum não encontrado!");
+    }
+} catch (error) {
+  console.log(error)
+}}
+
 const searchCertificates = async (ra) => {
   try {
     const { ethereum } = window;
@@ -32,7 +64,11 @@ const searchCertificates = async (ra) => {
   }
 };
 
-
+const handleSubmit = async (event) => {
+  event.preventDefault();
+  console.log("Formulário enviado:", form);
+  await issueCertificate(form)
+};
 
 function BuscaTab() {
   const [ra, setRa] = useState("");
@@ -55,7 +91,7 @@ function BuscaTab() {
       <div className="form-group">
         <label htmlFor="ra">RA</label>
         <input
-          type="text"
+          type="number"
           className="form-control"
           id="ra"
           name="ra"
@@ -97,16 +133,7 @@ function BuscaTab() {
   );
 }
 
-
-
-export default function App() {
-  const [currentAccount, setCurrentAccount] = useState("");
-  const [activeKey, setActiveKey] = useState("emissao");
-  const [isConnected, setIsConnected] = useState(false);
-
-
-  //-------------- Contrato --------------//
-
+function EmissaoTab() {
   const [form, setForm] = useState({
     ra: 0,
     hoursDone: 0,
@@ -114,37 +141,75 @@ export default function App() {
     link: ""
   });
 
-  const issueCertificate = async (form) => {
-    try {
-      const { ethereum } = window;
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+    setForm({ ...form, [name]: value });
+  };
+  
+  return (
+    <form onSubmit={handleSubmit}>
+      <div className="form-group">
+        <label htmlFor="ra">RA</label>
+        <input
+          type="number"
+          className="form-control"
+          id="ra"
+          name="ra"
+          value={form.ra === 0 ? "" : form.ra}
+          onChange={handleInputChange}
+        />
+      </div>
+      <div className="form-group">
+        <label htmlFor="hoursDone">Horas Concluídas</label>
+        <input
+          type="number"
+          className="form-control"
+          id="hoursDone"
+          name="hoursDone"
+          value={form.hoursDone === 0 ? "" : form.hoursDone}
+          onChange={handleInputChange}
+        />
+      </div>
+      <div className="form-group">
+        <label htmlFor="name">Nome</label>
+        <input
+          type="text"
+          className="form-control"
+          id="name"
+          name="name"
+          value={form.name}
+          onChange={handleInputChange}
+        />
+      </div>
+      <div className="form-group">
+        <label htmlFor="link">Link</label>
+        <input
+          type="text"
+          className="form-control"
+          id="link"
+          name="link"
+          value={form.link}
+          onChange={handleInputChange}
+        />
+      </div>
+      <button type="submit" className="btn btn-primary">
+        Emitir Certificado
+      </button>
+    </form>
+    
+  );
+}
 
-      if (ethereum) {
-        const provider = new ethers.providers.Web3Provider(ethereum);
-        const signer = provider.getSigner();
-        const issueCertificate = new ethers.Contract(contractAddress, contractABI, signer);
 
-        console.log("Emitindo certificado.");
-        let certificate = {
-          "RA": parseInt(form.ra),
-          "hoursDone": parseInt(form.hoursDone),
-          "name": form.name,
-          "link": form.link
-        }
-        let xpto = await issueCertificate.issueNewCertificate(certificate);
 
-        console.log("Minerando...", xpto.hash);
-        await xpto.wait();
-        console.log("Minerado -- ", xpto.hash);
-        
-        let certificates = await issueCertificate.getCertificatesByRA(parseInt(form.ra))
-        console.log(certificates)
+export default function App() {
+  const [currentAccount, setCurrentAccount] = useState("");
+  const [activeKey, setActiveKey] = useState("emissao");
+  const [isConnected, setIsConnected] = useState(false);
 
-      } else {
-        console.log("Objeto Ethereum não encontrado!");
-      }
-    } catch (error) {
-      console.log(error)
-    }}
+  const handleSelect = (key) => {
+    setActiveKey(key);
+  };
 
   //-------------- Connext Wallet --------------//
 
@@ -192,23 +257,6 @@ export default function App() {
     }
   }
 
-  //-------------- React --------------//
-  
-  const handleInputChange = (event) => {
-    const { name, value } = event.target;
-    setForm({ ...form, [name]: value });
-  };
-
-  const handleSelect = (key) => {
-    setActiveKey(key);
-  };
-
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    console.log("Formulário enviado:", form);
-    await issueCertificate(form)
-  };
-
   useEffect(() => {
     checkIfWalletIsConnected();
   }, [])
@@ -244,58 +292,10 @@ export default function App() {
         </Tab>
         <Tab eventKey="emissao" title="Emissão">
         {isConnected ? (
-            <form onSubmit={handleSubmit}>
-              <div className="form-group">
-                <label htmlFor="ra">RA</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  id="ra"
-                  name="ra"
-                  value={form.ra === 0 ? "" : form.ra}
-                  onChange={handleInputChange}
-                />
-              </div>
-              <div className="form-group">
-                <label htmlFor="hoursDone">Horas Concluídas</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  id="hoursDone"
-                  name="hoursDone"
-                  value={form.hoursDone === 0 ? "" : form.hoursDone}
-                  onChange={handleInputChange}
-                />
-              </div>
-              <div className="form-group">
-                <label htmlFor="name">Nome</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  id="name"
-                  name="name"
-                  value={form.name}
-                  onChange={handleInputChange}
-                />
-              </div>
-              <div className="form-group">
-                <label htmlFor="link">Link</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  id="link"
-                  name="link"
-                  value={form.link}
-                  onChange={handleInputChange}
-                />
-              </div>
-              <button type="submit" className="btn btn-primary">
-                Emitir Certificado
-              </button>
-            </form>
-          ) : (
-            <ErrorScreen />
-          )}
+          <EmissaoTab />
+        ) : (
+          <ErrorScreen />
+        )}
         </Tab>
       </Tabs>
     </div>
