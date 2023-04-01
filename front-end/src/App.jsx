@@ -1,4 +1,4 @@
- import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ethers, utils } from "ethers";
 import './App.css';
 import abi from "./utils/issueCertificate.json"
@@ -64,11 +64,7 @@ const searchCertificates = async (ra) => {
   }
 };
 
-const handleSubmit = async (event) => {
-  event.preventDefault();
-  console.log("Formulário enviado:", form);
-  await issueCertificate(form)
-};
+
 
 function BuscaTab() {
   const [ra, setRa] = useState("");
@@ -134,13 +130,21 @@ function BuscaTab() {
 }
 
 function EmissaoTab() {
+
+  
   const [form, setForm] = useState({
     ra: 0,
     hoursDone: 0,
     name: "",
     link: ""
   });
-
+  
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    console.log("Formulário enviado:", form);
+    await issueCertificate(form)
+  };
+  
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setForm({ ...form, [name]: value });
