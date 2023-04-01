@@ -239,6 +239,9 @@ export default function App() {
             onSelect={handleSelect}
             id="certificados-tabs"
             defaultActiveKey="emissao">
+        <Tab eventKey="busca" title="Busca">
+          <BuscaTab />
+        </Tab>
         <Tab eventKey="emissao" title="Emissão">
         {isConnected ? (
             <form onSubmit={handleSubmit}>
@@ -293,9 +296,6 @@ export default function App() {
           ) : (
             <ErrorScreen />
           )}
-        </Tab>
-        <Tab eventKey="busca" title="Busca">
-          <BuscaTab />
         </Tab>
       </Tabs>
     </div>
