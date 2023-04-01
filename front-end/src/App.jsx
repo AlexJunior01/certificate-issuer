@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+ import React, { useEffect, useState } from "react";
 import { ethers, utils } from "ethers";
 import './App.css';
 import abi from "./utils/issueCertificate.json"
@@ -102,6 +102,8 @@ function BuscaTab() {
 export default function App() {
   const [currentAccount, setCurrentAccount] = useState("");
   const [activeKey, setActiveKey] = useState("emissao");
+  const [isConnected, setIsConnected] = useState(false);
+
 
   //-------------- Contrato --------------//
 
@@ -163,6 +165,7 @@ export default function App() {
         const account = accounts[0];
         console.log("Encontrada a conta autorizada:", account);
         setCurrentAccount(account)
+        setIsConnected(true);
       } else {
         console.log("Nenhuma conta autorizada foi encontrada")
       }
@@ -193,7 +196,6 @@ export default function App() {
   
   const handleInputChange = (event) => {
     const { name, value } = event.target;
-    // const parsedValue = (name === "ra" || name === "hoursDone") && value !== undefined && typeof value === 'string' ? new BigNumber(value) : value;
     setForm({ ...form, [name]: value });
   };
 
@@ -210,6 +212,15 @@ export default function App() {
   useEffect(() => {
     checkIfWalletIsConnected();
   }, [])
+
+  function ErrorScreen() {
+    return (
+      <div className="error-screen form-container">
+        <h2 className="error-title">Você precisa se conectar na Metamask</h2>
+        <p className="error-content">Por favor, conecte-se à sua carteira MetaMask para continuar usando o aplicativo.</p>
+      </div>
+    );
+  }
 
   //-------------- App --------------//
 
@@ -229,55 +240,59 @@ export default function App() {
             id="certificados-tabs"
             defaultActiveKey="emissao">
         <Tab eventKey="emissao" title="Emissão">
-          <form onSubmit={handleSubmit}>
-            <div className="form-group">
-              <label htmlFor="ra">RA</label>
-              <input
-                type="text"
-                className="form-control"
-                id="ra"
-                name="ra"
-                value={form.ra}
-                onChange={handleInputChange}
-              />
-            </div>
-            <div className="form-group">
-              <label htmlFor="hoursDone">Horas Concluídas</label>
-              <input
-                type="text"
-                className="form-control"
-                id="hoursDone"
-                name="hoursDone"
-                value={form.hoursDone}
-                onChange={handleInputChange}
-              />
-            </div>
-            <div className="form-group">
-              <label htmlFor="name">Nome</label>
-              <input
-                type="text"
-                className="form-control"
-                id="name"
-                name="name"
-                value={form.name}
-                onChange={handleInputChange}
-              />
-            </div>
-            <div className="form-group">
-              <label htmlFor="link">Link</label>
-              <input
-                type="text"
-                className="form-control"
-                id="link"
-                name="link"
-                value={form.link}
-                onChange={handleInputChange}
-              />
-            </div>
-            <button type="submit" className="btn btn-primary">
-              Emitir Certificado
-            </button>
-          </form>
+        {isConnected ? (
+            <form onSubmit={handleSubmit}>
+              <div className="form-group">
+                <label htmlFor="ra">RA</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  id="ra"
+                  name="ra"
+                  value={form.ra === 0 ? "" : form.ra}
+                  onChange={handleInputChange}
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="hoursDone">Horas Concluídas</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  id="hoursDone"
+                  name="hoursDone"
+                  value={form.hoursDone === 0 ? "" : form.hoursDone}
+                  onChange={handleInputChange}
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="name">Nome</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  id="name"
+                  name="name"
+                  value={form.name}
+                  onChange={handleInputChange}
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="link">Link</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  id="link"
+                  name="link"
+                  value={form.link}
+                  onChange={handleInputChange}
+                />
+              </div>
+              <button type="submit" className="btn btn-primary">
+                Emitir Certificado
+              </button>
+            </form>
+          ) : (
+            <ErrorScreen />
+          )}
         </Tab>
         <Tab eventKey="busca" title="Busca">
           <BuscaTab />
