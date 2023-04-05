@@ -7,7 +7,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min';
 import { ListGroup } from 'react-bootstrap';
 
-import  ErrorNotification from './components/ErrorNotification';
+import  Notification from './components/ErrorNotification';
 
 const contractAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
 const contractABI = abi.abi;
@@ -87,7 +87,6 @@ function BuscaTab() {
 
   const handleSearch = async (event) => {
     event.preventDefault();
-    console.log("Buscando certificados para RA:", ra);
     const foundCertificates = await searchCertificates(ra);
     setCertificates(foundCertificates);
   };
@@ -104,13 +103,14 @@ function BuscaTab() {
           name="ra"
           value={ra}
           onChange={handleRaChange}
+          required
         />
       </div>
       <button type="submit" className="btn btn-primary">Pesquisar</button>
     </form>
     <div className="list-group-container">
       {error && (
-        <ErrorNotification
+        <Notification
           message={notificationMessage}
           onClose={() => setError(false)}
         />
