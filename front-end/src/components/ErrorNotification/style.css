@@ -1,24 +1,24 @@
 .notification {
     position: fixed;
-    top: 70px;
+    top: 20px;
     left: 50%;
     transform: translateX(-50%);
-    padding: 10px;
-    background-color: #f8d7da;
-    color: #721c24;
-    border: 1px solid #f5c6cb;
+    padding: 15px;
+    background-color: #e8f4fd; /* cor de fundo mais suave */
+    color: #1c3e72; /* cor do texto com melhor contraste */
+    border: 1px solid #c9e2f8;
     width: 90%;
     max-width: 500px;
     border-radius: 4px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-  }
-  
-  .notification p {
-    margin: 0;
-    padding-left: 30px; /* adiciona espaço para o ícone */
-  }
-  
-  .notification button {
+    display: flex; /* adicionar flexbox */
+    align-items: center; /* centralizar verticalmente */
+    justify-content: space-between; /* distribuir espaço entre os elementos */
+    opacity: 0;
+    animation: fadeIn 0.5s forwards; /* adicionar animação de fade-in */
+}
+
+.close-button {
     position: absolute;
     top: 5px;
     right: 5px;
@@ -27,20 +27,38 @@
     font-size: 16px;
     font-weight: bold;
     cursor: pointer;
-    color: #333; /* torna o botão de fechamento mais visível */
-  }
+    color: #721c24;
+}
   
-  .notification-icon {
-    position: absolute;
-    top: 50%;
-    left: 5px;
-    transform: translateY(-50%);
+  
+.notification p {
+    margin: 0;
+    padding-left: 10px; /* ajustar o espaçamento para o ícone */
+    font-size: 1rem; /* ajustar o tamanho da fonte */
+    font-weight: 500; /* ajustar o peso da fonte */
+    flex-grow: 1; /* permitir que o parágrafo cresça para ocupar espaço disponível */
+}
+  
+.notification button {
+    background-color: transparent;
+    border: none;
+    font-size: 1.2rem;
+    font-weight: bold;
+    cursor: pointer;
+    color: #1c3e72; /* ajustar a cor do botão de fechamento */
+    margin-left: 10px; /* adicionar margem entre o texto e o botão de fechamento */
+}
+  
+.notification-icon {
     height: 20px;
     width: 20px;
-    z-index: 1; /* define o z-index do ícone como 1 para que fique na frente da mensagem de erro */
-  }
+    z-index: 1;
+    align-self: flex-start;
+}
   
-  .notification-icon svg {
-    height: 100%;
-    width: 100%;
-  }
+
+@keyframes fadeIn {
+    to {
+      opacity: 1;
+    }
+}
