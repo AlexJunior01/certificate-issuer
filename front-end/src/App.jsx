@@ -7,6 +7,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min';
 import { ListGroup } from 'react-bootstrap';
 
+import  ErrorNotification from './components/ErrorNotification';
+
 const contractAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
 const contractABI = abi.abi;
 
@@ -41,33 +43,6 @@ const issueCertificate = async (form) => {
 } catch (error) {
   console.log(error)
 }}
-
-
-
-const Notification = ({ message, onClose }) => {
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      onClose();
-    }, 5000);
-
-    return () => {
-      clearTimeout(timeout);
-    };
-  }, [onClose]);
-
-  return (
-    <div className="notification">
-      <div className="notification-icon">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M0 0h24v24H0z" fill="none"/>
-          <path d="M12 2a10 10 0 0 0-9.95 9h2.01a8.002 8.002 0 0 1 15.89 0h2A10 10 0 0 0 12 2zm0 16a6 6 0 1 1 0-12 6 6 0 0 1 0 12zm1-10h-2v4h2v-4z"/>
-        </svg>
-      </div>
-      <p>{message}</p>
-      <button onClick={onClose}>X</button>
-    </div>
-  );
-};
 
 
 function BuscaTab() {
@@ -135,7 +110,7 @@ function BuscaTab() {
     </form>
     <div className="list-group-container">
       {error && (
-        <Notification
+        <ErrorNotification
           message={notificationMessage}
           onClose={() => setError(false)}
         />
