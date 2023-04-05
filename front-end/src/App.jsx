@@ -42,33 +42,69 @@ const issueCertificate = async (form) => {
   console.log(error)
 }}
 
-const searchCertificates = async (ra) => {
-  try {
-    const { ethereum } = window;
 
-    if (ethereum) {
-      const provider = new ethers.providers.Web3Provider(ethereum);
-      const signer = provider.getSigner();
-      const issueCertificateContract = new ethers.Contract(contractAddress, contractABI, signer);
 
-      console.log("Buscando certificados para RA:", ra);
-      let certificates = await issueCertificateContract.getCertificatesByRA(parseInt(ra));
-      console.log(certificates);
-      return certificates
+const Notification = ({ message, onClose }) => {
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      onClose();
+    }, 5000);
 
-    } else {
-      console.log("Objeto Ethereum não encontrado!");
-    }
-  } catch (error) {
-    console.log(error);
-  }
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [onClose]);
+
+  return (
+    <div className="notification">
+      <div className="notification-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M0 0h24v24H0z" fill="none"/>
+          <path d="M12 2a10 10 0 0 0-9.95 9h2.01a8.002 8.002 0 0 1 15.89 0h2A10 10 0 0 0 12 2zm0 16a6 6 0 1 1 0-12 6 6 0 0 1 0 12zm1-10h-2v4h2v-4z"/>
+        </svg>
+      </div>
+      <p>{message}</p>
+      <button onClick={onClose}>X</button>
+    </div>
+  );
 };
-
 
 
 function BuscaTab() {
   const [ra, setRa] = useState("");
   const [certificates, setCertificates] = useState([]);
+  const [notificationMessage, setNotificationMessage] = useState('');
+  const [error, setError] = useState(false);
+
+  const searchCertificates = async (ra) => {
+    try {
+      const { ethereum } = window;
+  
+      if (ethereum) {
+        const provider = new ethers.providers.Web3Provider(ethereum);
+        const signer = provider.getSigner();
+        const issueCertificateContract = new ethers.Contract(contractAddress, contractABI, signer);
+  
+        console.log("Buscando certificados para RA:", ra);
+        let certificates = await issueCertificateContract.getCertificatesByRA(parseInt(ra));
+        console.log(certificates.length);
+  
+        if (certificates.length == 0) {
+          setNotificationMessage(`Nenhum certificado encontrado para o RA ${ra}.`);
+          setError(true);
+          setTimeout(() => {
+            setError(false);
+          }, 5000);
+        }
+        return certificates;
+  
+      } else {
+        console.log("Objeto Ethereum não encontrado!");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const handleRaChange = (event) => {
     setRa(event.target.value);
@@ -98,6 +134,12 @@ function BuscaTab() {
       <button type="submit" className="btn btn-primary">Pesquisar</button>
     </form>
     <div className="list-group-container">
+      {error && (
+        <Notification
+          message={notificationMessage}
+          onClose={() => setError(false)}
+        />
+      )}
       <ListGroup className="custom-list-group">
         {certificates.map((certificate, index) => (
           <ListGroup.Item key={index} className="list-group-item">
