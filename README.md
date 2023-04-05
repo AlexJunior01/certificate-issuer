@@ -3,7 +3,7 @@
 ## Descrição
 Atualmente o processo de validacão de créditos da Universidade é muito burocrático. Temos uma enorme dependência em papéis e documentos que muitas vezes perdemos ao longo do curso, tanto quanto, uma dependência na secretaria do curso para a validação dos créditos de todos os estudantes.
 
-O intuito desse projecto é utilizar os contratos inteligentes da rede distribuída do Ethereum para válidar certificados da Universidade. Assim podemos garantir que o certificado foi emitido por uma entidade específica, e também, garantir que os documentos não serão perdidos, pois ficaram distríbuidos na rede para sempre.
+O intuito desse projecto é utilizar os contratos inteligentes da rede distribuída do Ethereum para válidar certificados da Universidade. Assim podemos garantir que o certificado foi emitido por uma entidade específica, e também, garantir que os documentos não serão perdidos, pois ficarão distríbuidos na rede para sempre.
 
 Atualmente o projeto esta funcionando para uma única entidade (Hackoonspace), mas o objetivo é aprimora-lo para pode ser utilizado por qualquer entidade.
 
