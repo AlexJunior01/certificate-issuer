@@ -1,0 +1,64 @@
+.notification {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 15px;
+    background-color: #e8f4fd; /* cor de fundo mais suave */
+    color: #1c3e72; /* cor do texto com melhor contraste */
+    border: 1px solid #c9e2f8;
+    width: 90%;
+    max-width: 500px;
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    display: flex; /* adicionar flexbox */
+    align-items: center; /* centralizar verticalmente */
+    justify-content: space-between; /* distribuir espaço entre os elementos */
+    opacity: 0;
+    animation: fadeIn 0.5s forwards; /* adicionar animação de fade-in */
+}
+
+.close-button {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background-color: transparent;
+    border: none;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    color: #721c24;
+}
+  
+  
+.notification p {
+    margin: 0;
+    padding-left: 10px; /* ajustar o espaçamento para o ícone */
+    font-size: 1rem; /* ajustar o tamanho da fonte */
+    font-weight: 500; /* ajustar o peso da fonte */
+    flex-grow: 1; /* permitir que o parágrafo cresça para ocupar espaço disponível */
+}
+  
+.notification button {
+    background-color: transparent;
+    border: none;
+    font-size: 1.2rem;
+    font-weight: bold;
+    cursor: pointer;
+    color: #1c3e72; /* ajustar a cor do botão de fechamento */
+    margin-left: 10px; /* adicionar margem entre o texto e o botão de fechamento */
+}
+  
+.notification-icon {
+    height: 20px;
+    width: 20px;
+    z-index: 1;
+    align-self: flex-start;
+}
+  
+
+@keyframes fadeIn {
+    to {
+      opacity: 1;
+    }
+}

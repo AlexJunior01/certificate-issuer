@@ -7,6 +7,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min';
 import { ListGroup } from 'react-bootstrap';
 
+import  Notification from './components/ErrorNotification';
+
 const contractAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
 const contractABI = abi.abi;
 
@@ -42,33 +44,42 @@ const issueCertificate = async (form) => {
   console.log(error)
 }}
 
-const searchCertificates = async (ra) => {
-  try {
-    const { ethereum } = window;
-
-    if (ethereum) {
-      const provider = new ethers.providers.Web3Provider(ethereum);
-      const signer = provider.getSigner();
-      const issueCertificateContract = new ethers.Contract(contractAddress, contractABI, signer);
-
-      console.log("Buscando certificados para RA:", ra);
-      let certificates = await issueCertificateContract.getCertificatesByRA(parseInt(ra));
-      console.log(certificates);
-      return certificates
-
-    } else {
-      console.log("Objeto Ethereum não encontrado!");
-    }
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-
 
 function BuscaTab() {
   const [ra, setRa] = useState("");
   const [certificates, setCertificates] = useState([]);
+  const [notificationMessage, setNotificationMessage] = useState('');
+  const [error, setError] = useState(false);
+
+  const searchCertificates = async (ra) => {
+    try {
+      const { ethereum } = window;
+  
+      if (ethereum) {
+        const provider = new ethers.providers.Web3Provider(ethereum);
+        const signer = provider.getSigner();
+        const issueCertificateContract = new ethers.Contract(contractAddress, contractABI, signer);
+  
+        console.log("Buscando certificados para RA:", ra);
+        let certificates = await issueCertificateContract.getCertificatesByRA(parseInt(ra));
+        console.log(certificates.length);
+  
+        if (certificates.length == 0) {
+          setNotificationMessage(`Nenhum certificado encontrado para o RA ${ra}.`);
+          setError(true);
+          setTimeout(() => {
+            setError(false);
+          }, 5000);
+        }
+        return certificates;
+  
+      } else {
+        console.log("Objeto Ethereum não encontrado!");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const handleRaChange = (event) => {
     setRa(event.target.value);
@@ -76,7 +87,6 @@ function BuscaTab() {
 
   const handleSearch = async (event) => {
     event.preventDefault();
-    console.log("Buscando certificados para RA:", ra);
     const foundCertificates = await searchCertificates(ra);
     setCertificates(foundCertificates);
   };
@@ -93,11 +103,18 @@ function BuscaTab() {
           name="ra"
           value={ra}
           onChange={handleRaChange}
+          required
         />
       </div>
       <button type="submit" className="btn btn-primary">Pesquisar</button>
     </form>
     <div className="list-group-container">
+      {error && (
+        <Notification
+          message={notificationMessage}
+          onClose={() => setError(false)}
+        />
+      )}
       <ListGroup className="custom-list-group">
         {certificates.map((certificate, index) => (
           <ListGroup.Item key={index} className="list-group-item">

@@ -1,5 +1,4 @@
 --------------------- Alex ---------------------
-- Mensagem de erro quando não houver certificados emitidos para o RA informado
 
 
 
