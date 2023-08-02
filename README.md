@@ -1,5 +1,7 @@
 # Certificate Issuer
 
+**Note: This README should be in portuguese because the project will be published in a portuguese journal. The english version is in the file `README-en.md`**
+
 ## Conceito do projeto
 Atualmente o processo de validacão de créditos da Universidade é muito burocrático. Temos uma enorme dependência em papéis e documentos que muitas vezes perdemos ao longo do curso, tanto quanto, uma dependência na secretaria do curso para a validação dos créditos de todos os estudantes.
 
